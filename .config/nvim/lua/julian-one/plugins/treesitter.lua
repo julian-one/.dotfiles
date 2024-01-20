@@ -2,37 +2,23 @@ return {
     {
         "nvim-treesitter/nvim-treesitter",
         event = { "BufReadPre", "BufNewFile" },
-        build = ":TSUpdate",
-        dependencies = {
+        run = ":TSUpdate",
+        requires = {
             "nvim-treesitter/nvim-treesitter-textobjects",
             "windwp/nvim-ts-autotag",
+            "JoosepAlviste/nvim-ts-context-commentstring",
         },
         config = function()
-            -- import nvim-treesitter plugin
-            local treesitter = require("nvim-treesitter.configs")
-
-            -- configure treesitter
-            treesitter.setup({ -- enable syntax highlighting
+            require("nvim-treesitter.configs").setup({
                 highlight = {
-                    enable = true,
+                    enable = true, -- Enable syntax highlighting
                 },
-                -- enable indentation
-                indent = { enable = true },
-                -- ensure these language parsers are installed
+                indent = {
+                    enable = true, -- Enable indentation
+                },
                 ensure_installed = {
-                    "go",
-                    "json",
-                    "javascript",
-                    "yaml",
-                    "html",
-                    "css",
-                    "markdown",
-                    "bash",
-                    "lua",
-                    "vim",
-                    "dockerfile",
-                    "gitignore",
-                    "query",
+                    "go", "json", "javascript", "yaml", "html", "css",
+                    "markdown", "bash", "lua", "vim", "dockerfile", "gitignore",
                 },
                 incremental_selection = {
                     enable = true,
@@ -43,7 +29,14 @@ return {
                         node_decremental = "<bs>",
                     },
                 },
+                autotag = {
+                    enable = true, -- Automatic tag management for HTML/HTMX
+                },
+                context_commentstring = {
+                    enable = true, -- Context-aware commenting based on file type
+                },
             })
         end,
     },
 }
+

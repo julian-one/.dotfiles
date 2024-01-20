@@ -1,35 +1,47 @@
+-- Hide the GUI cursor when in normal mode.
 vim.opt.guicursor = ""
 
-vim.opt.nu = true
-vim.opt.relativenumber = true
+-- Line numbering: enable both absolute and relative line numbers.
+vim.opt.nu = true             -- Enables absolute line numbers.
+vim.opt.relativenumber = true -- Enables relative line numbers.
 
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
+-- Indentation settings: standardize on 4 spaces for a tab.
+vim.opt.tabstop = 4      -- Number of spaces that a <Tab> in the file counts for.
+vim.opt.softtabstop = 4  -- Number of spaces that a <Tab> counts for while performing editing operations.
+vim.opt.shiftwidth = 4   -- Number of spaces to use for each step of (auto)indent.
+vim.opt.expandtab = true -- Convert tabs to spaces.
 
+-- Automatically indent new lines.
 vim.opt.smartindent = true
 
+-- Do not automatically wrap lines.
 vim.opt.wrap = false
 
-vim.opt.swapfile = false
-vim.opt.backup = false
-vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
-vim.opt.undofile = true
+-- File backup settings: disable swap and backup files, set undo directory.
+vim.opt.swapfile = false                               -- Disable swap file creation.
+vim.opt.backup = false                                 -- Disable backup file creation.
+vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir" -- Set the directory for undo files.
+vim.opt.undofile = true                                -- Enable persistent undo.
 
-vim.opt.hlsearch = false
-vim.opt.incsearch = true
+-- Search settings: disable highlighting of search matches, enable incremental search.
+vim.opt.hlsearch = false -- Do not highlight all search pattern matches.
+vim.opt.incsearch = true -- Show partial matches for a search phrase.
 
+-- Enable 24-bit RGB color in the TUI.
 vim.opt.termguicolors = true
 
-vim.opt.scrolloff = 8
-vim.opt.signcolumn = "yes"
-vim.opt.isfname:append("@-@")
+-- Scrolling and window layout settings.
+vim.opt.scrolloff = 8         -- Start scrolling when we're 8 lines away from margins.
+vim.opt.signcolumn = "yes"    -- Always show the sign column.
+vim.opt.isfname:append("@-@") -- Include '@' in file names.
 
+-- Reduce time waiting after key press for better responsiveness in certain plugins.
 vim.opt.updatetime = 50
 
-vim.opt.colorcolumn = "80"
+-- Highlight column for text width limit.
+vim.opt.colorcolumn = "80" -- Highlight column 80 to help maintain line length.
 
--- split windows
-vim.opt.splitright = true -- split vertical window to the right
-vim.opt.splitbelow = true -- split horizontal window to the bottom
+-- Split window preferences.
+vim.opt.splitright = true -- When splitting a window, put the new window right of the current one.
+vim.opt.splitbelow = true -- When splitting a window, put the new window below the current one.
+

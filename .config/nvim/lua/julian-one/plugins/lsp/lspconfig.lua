@@ -6,14 +6,8 @@ return {
         { "antosha417/nvim-lsp-file-operations", config = true },
     },
     config = function()
-        -- import lspconfig plugin
         local lspconfig = require("lspconfig")
-
-        -- import cmp-nvim-lsp plugin
         local cmp_nvim_lsp = require("cmp_nvim_lsp")
-
-        local keymap = vim.keymap -- for conciseness
-
         local opts = { noremap = true, silent = true }
 
         local function organize_imports_sync(bufnr, timeout_ms)
@@ -24,9 +18,7 @@ return {
                 for _, action in pairs(res.result or {}) do
                     if action.edit or type(action.command) == "table" then
                         if action.edit then
-                            -- Get the client associated with the buffer number
-                            local client = vim.lsp.get_client_by_id(vim.lsp.get_active_clients({bufnr = bufnr})[1].id)
-                            -- Pass the correct offset_encoding to apply_workspace_edit
+                            local client = vim.lsp.get_client_by_id(vim.lsp.get_active_clients({ bufnr = bufnr })[1].id)
                             vim.lsp.util.apply_workspace_edit(action.edit, client.offset_encoding)
                         end
                         if action.command then
@@ -37,63 +29,22 @@ return {
             end
         end
 
-
         local on_attach = function(client, bufnr)
             opts.buffer = bufnr
 
-            -- set keybinds
-            opts.desc = "Show LSP references"
-            keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts) -- show definition, references
-
-            opts.desc = "Go to declaration"
-            keymap.set("n", "gD", vim.lsp.buf.declaration, opts) -- go to declaration
-
-            opts.desc = "Show LSP definitions"
-            keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts) -- show lsp definitions
-
-            opts.desc = "Show LSP implementations"
-            keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts) -- show lsp implementations
-
-            opts.desc = "Show LSP type definitions"
-            keymap.set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts) -- show lsp type definitions
-
-            opts.desc = "See available code actions"
-            keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
-
-            opts.desc = "Smart rename"
-            keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts) -- smart rename
-
-            opts.desc = "Show buffer diagnostics"
-            keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts) -- show  diagnostics for file
-
-            opts.desc = "Show line diagnostics"
-            keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts) -- show diagnostics for line
-
-            opts.desc = "Go to previous diagnostic"
-            keymap.set("n", "[d", vim.diagnostic.goto_prev, opts) -- jump to previous diagnostic in buffer
-
-            opts.desc = "Go to next diagnostic"
-            keymap.set("n", "]d", vim.diagnostic.goto_next, opts) -- jump to next diagnostic in buffer
-
-            opts.desc = "Show documentation for what is under cursor"
-            keymap.set("n", "K", vim.lsp.buf.hover, opts) -- show documentation for what is under cursor
-
-            opts.desc = "Restart LSP"
-            keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
-
-            -- Auto-commands for formatting and organizing imports on save
-            if client.server_capabilities.documentFormattingProvider then
-                vim.api.nvim_create_autocmd("BufWritePre", {
-                    group = vim.api.nvim_create_augroup("GoFmt", { clear = true }),
-                    buffer = bufnr,
-                    callback = function()
-                        -- Organize imports before saving
-                        organize_imports_sync(bufnr, 1000)
-                        -- Run format after organizing imports
-                        vim.lsp.buf.format({ bufnr = bufnr })
-                    end,
-                })
-            end
+            vim.keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts)             -- show definition, references
+            vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)                         -- go to declaration
+            vim.keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts)            -- show lsp definitions
+            vim.keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts)        -- show lsp implementations
+            vim.keymap.set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts)       -- show lsp type definitions
+            vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)        -- see available code actions, in visual mode will apply to selection
+            vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)                      -- smart rename
+            vim.keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts) -- show  diagnostics for file
+            vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts)                -- show diagnostics for line
+            vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)                        -- jump to previous diagnostic in buffer
+            vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)                        -- jump to next diagnostic in buffer
+            vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)                                -- show documentation for what is under cursor
+            vim.keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts)                       -- mapping to restart lsp if necessary
         end
 
         -- used to enable autocompletion (assign to every lsp server config)
@@ -128,19 +79,56 @@ return {
         lspconfig["emmet_ls"].setup({
             capabilities = capabilities,
             on_attach = on_attach,
-            filetypes = { "html", "css"},
+            filetypes = { "html", "css" },
         })
 
         -- configure lua server (with special settings)
         lspconfig["lua_ls"].setup({
-            capabilities = capabilities,
+            settings = {
+                Lua = {
+                    diagnostics = {
+                        globals = { 'vim' }, -- Recognize the `vim` global
+                    },
+                    workspace = {
+                        library = {
+                            -- This loads the `lua` files from `nvim` to allow for completion of the `vim` api.
+                            [vim.fn.expand('$VIMRUNTIME/lua')] = true,
+                            [vim.fn.stdpath('config') .. '/lua'] = true,
+                        },
+                    },
+                    -- other settings ...
+                },
+            },
             on_attach = on_attach,
+            capabilities = capabilities,
         })
+
 
         lspconfig["gopls"].setup({
             capabilities = capabilities,
             on_attach = on_attach,
         })
 
+        -- Create an autocmd group for formatting
+        local fmt_group = vim.api.nvim_create_augroup("Fmt", { clear = true })
+
+        -- Global autocmd for auto-formatting
+        vim.api.nvim_create_autocmd("BufWritePre", {
+            group = fmt_group,
+            pattern = "*",
+            callback = function()
+                local bufnr = vim.api.nvim_get_current_buf()
+
+                -- Check all attached clients for formatting capability
+                local clients = vim.lsp.get_active_clients({ bufnr = bufnr })
+                for _, client in pairs(clients) do
+                    if client.server_capabilities.documentFormattingProvider then
+                        organize_imports_sync(bufnr, 1000)
+                        vim.lsp.buf.format({ bufnr = bufnr })
+                        return -- Exit after formatting
+                    end
+                end
+            end,
+        })
     end,
 }
