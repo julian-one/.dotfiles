@@ -10,34 +10,15 @@ return {
             require("nvim-treesitter.configs").setup({
                 highlight = {
                     enable = true,
+                    additional_vim_regex_highlighting = false,
                 },
-                -- enable indentation
                 indent = { enable = true },
-                -- ensure these language parsers are installed
                 ensure_installed = {
-                    "go",
-                    "json",
-                    "javascript",
-                    "yaml",
-                    "html",
-                    "css",
-                    "markdown",
-                    "markdown_inline",
-                    "bash",
-                    "dockerfile",
-                    "gitignore",
-                    "lua", "vim",
-                    "vimdoc",
-                    "query",
-                },
-                incremental_selection = {
-                    enable = true,
-                    keymaps = {
-                        init_selection = "<C-space>",
-                        node_incremental = "<C-space>",
-                        scope_incremental = false,
-                        node_decremental = "<bs>",
-                    },
+                    "go", "json", "javascript",
+                    "yaml", "html", "css",
+                    "markdown", "markdown_inline", "bash",
+                    "dockerfile", "gitignore",
+                    "lua", "vim", "vimdoc", "query",
                 },
             })
         end,

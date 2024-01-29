@@ -1,6 +1,7 @@
 -- Hide the GUI cursor when in normal mode.
 vim.opt.guicursor = ""
-
+-- More space in the neovim command line for displaying messages.
+vim.opt.cmdheight = 2
 -- Line numbering: enable both absolute and relative line numbers.
 vim.opt.nu = true             -- Enables absolute line numbers.
 vim.opt.relativenumber = true -- Enables relative line numbers.
@@ -45,3 +46,15 @@ vim.opt.colorcolumn = "80" -- Highlight column 80 to help maintain line length.
 vim.opt.splitright = true -- When splitting a window, put the new window right of the current one.
 vim.opt.splitbelow = true -- When splitting a window, put the new window below the current one.
 
+-- for cmp
+vim.opt.completeopt = "menuone,noselect"
+
+-- popup menu
+vim.opt.pumheight = 10
+vim.opt.pumblend = 10
+
+-- gutter stuff
+vim.opt.signcolumn = "yes"
+
+-- netrw
+-- vim.g.netrw_banner = 0

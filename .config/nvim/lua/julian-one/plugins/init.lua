@@ -1,4 +1,4 @@
 return {
     "nvim-lua/plenary.nvim",
-    "github/copilot.vim",
+    "folke/neodev.nvim",
 }

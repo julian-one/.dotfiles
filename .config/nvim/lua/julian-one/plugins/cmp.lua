@@ -4,24 +4,30 @@ return {
     dependencies = {
         "hrsh7th/cmp-buffer",           -- source for text in buffer
         "hrsh7th/cmp-path",             -- source for file system paths
-        "L3MON4D3/LuaSnip",             -- snippet engine
+        "hrsh7th/cmp-nvim-lsp",         -- source for Neovim's LSP client
+        "hrsh7th/cmp-cmdline",          -- source for command line
+        "hrsh7th/cmp-nvim-lua",         -- source for Neovim's Lua API
+        {
+            "L3MON4D3/LuaSnip",         -- snippet engine
+            dependencies = {
+                "rafamadriz/friendly-snippets", -- useful snippets
+            },
+        },
         "saadparwaiz1/cmp_luasnip",     -- for autocompletion
-        "rafamadriz/friendly-snippets", -- useful snippets
-        "onsails/lspkind.nvim",         -- vs-code like pictograms
     },
     config = function()
         local cmp = require("cmp")
         local luasnip = require("luasnip")
-        local lspkind = require("lspkind")
 
-        -- loads vscode style snippets from installed plugins (e.g. friendly-snippets)
-        require("luasnip.loaders.from_vscode").lazy_load()
+        require("luasnip/loaders/from_vscode").lazy_load()
+
+        local check_backspace = function()
+            local col = vim.fn.col(".") - 1
+            return col == 0 or vim.fn.getline("."):sub(col, col):match("%s")
+        end
 
         cmp.setup({
-            completion = {
-                completeopt = "menu,menuone,preview",
-            },
-            snippet = { -- configure how nvim-cmp interacts with snippet engine
+            snippet = {
                 expand = function(args)
                     luasnip.lsp_expand(args.body)
                 end,
@@ -33,23 +39,64 @@ return {
                 ["<C-f>"] = cmp.mapping.scroll_docs(4),
                 ["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions
                 ["<C-e>"] = cmp.mapping.abort(),        -- close completion window
-                ["<CR>"] = cmp.mapping.confirm({ select = false }),
+                ["<CR>"] = cmp.mapping.confirm({ select = true }),
+                ["<Tab>"] = cmp.mapping(function(fallback)
+                    if cmp.visible() then
+                        cmp.select_next_item()
+                    elseif luasnip.expandable() then
+                        luasnip.expand()
+                    elseif luasnip.expand_or_jumpable() then
+                        luasnip.expand_or_jump()
+                    elseif check_backspace() then
+                        fallback()
+                    else
+                        fallback()
+                    end
+                end, {
+                        "i",
+                        "s",
+                    }),
+                ["<S-Tab>"] = cmp.mapping(function(fallback)
+                    if cmp.visible() then
+                        cmp.select_prev_item()
+                    elseif luasnip.jumpable(-1) then
+                        luasnip.jump(-1)
+                    else
+                        fallback()
+                    end
+                end, {
+                        "i",
+                        "s",
+                    }),
             }),
-            -- sources for autocompletion
             sources = cmp.config.sources({
-                { name = "copilot" }, -- source for github copilot
+                { name = "copilot" },
                 { name = "nvim_lsp" },
                 { name = "luasnip" }, -- snippets
+                { name = "cmp_tabnine" },
+                { name = "nvim_lua" },
                 { name = "buffer" },  -- text within current buffer
                 { name = "path" },    -- file system paths
             }),
-            -- configure lspkind for vs-code like pictograms in completion menu
             formatting = {
-                format = lspkind.cmp_format({
-                    maxwidth = 50,
-                    ellipsis_char = "...",
-                }),
+                fields = { "kind", "abbr", "menu" },
+                format = function(_, vim_item)
+                    -- You can add custom formatting here if needed
+                    return vim_item
+                end,
+            },
+            confirm_opts = {
+                behavior = cmp.ConfirmBehavior.Replace,
+                select = false,
+            },
+            window = {
+                completion = { border = "rounded", scrollbar = false },
+                documentation = { border = "rounded" },
+            },
+            experimental = {
+                ghost_text = false,
             },
         })
     end,
 }
+

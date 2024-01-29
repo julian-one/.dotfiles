@@ -2,7 +2,6 @@ return {
     "williamboman/mason.nvim",
     dependencies = {
         "williamboman/mason-lspconfig.nvim",
-        "WhoIsSethDaniel/mason-tool-installer.nvim",
     },
     config = function()
         local mason = require("mason")
@@ -10,6 +9,7 @@ return {
 
         mason.setup({
             ui = {
+                border = "rounded",
                 icons = {
                     package_installed = "✓",
                     package_pending = "➜",
@@ -23,11 +23,10 @@ return {
                 "gopls",
                 "html",
                 "cssls",
-                "tailwindcss",
                 "lua_ls",
-                "emmet_ls",
+                "bashls",
             },
-            automatic_installation = true, -- not the same as ensure_installed
+            automatic_installation = true,
         })
     end,
 }
