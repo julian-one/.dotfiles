@@ -14,13 +14,15 @@ vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
 vim.keymap.set("n", "<leader>Y", [["+Y]])
 
+-- tmux
 -- split my window
-vim.keymap.set("n", "<leader>sv", "<C-w>v")         -- Create a vertical split
-vim.keymap.set("n", "<leader>se", "<C-w>=")         -- Make all splits equal size
-vim.keymap.set("n", "<leader>ss", "<C-w>s")         -- Create a horizontal split
-vim.keymap.set("n", "<leader>sx", "<cmd>close<CR>") -- Close current split
-
-vim.keymap.set("n", "<leader>sl", "<C-w>l")         -- Move to the right split
-vim.keymap.set("n", "<leader>sh", "<C-w>h")         -- Move to the left split (reassigned to avoid conflict)
-vim.keymap.set("n", "<leader>sj", "<C-w>j")         -- Move to the lower split
-vim.keymap.set("n", "<leader>sk", "<C-w>k")         -- Move to the upper spli sh
+vim.keymap.set("n", "<leader>sv", ":execute '!tmux splitw -v'<CR>", { desc = "Create a Tmux vertical split" }) -- Create a Tmux vertical split
+vim.keymap.set("n", "<leader>ss", ":execute '!tmux splitw -h'<CR>", { desc = "Create a Tmux horizontal split" }) -- Create a Tmux horizontal split
+vim.keymap.set("n", "<leader>sx", ":execute '!tmux kill-pane'<CR>", { desc = "Close current Tmux pane" }) -- Close the current Tmux pane
+-- resize panes
+vim.keymap.set("n", "<leader>sl", ":execute '!tmux resize-pane -L 10'<CR>", { desc = "Resize pane left" })
+vim.keymap.set("n", "<leader>sr", ":execute '!tmux resize-pane -R 10'<CR>", { desc = "Resize pane right" })
+vim.keymap.set("n", "<leader>su", ":execute '!tmux resize-pane -U 10'<CR>", { desc = "Resize pane up" })
+vim.keymap.set("n", "<leader>sd", ":execute '!tmux resize-pane -D 10'<CR>", { desc = "Resize pane down" })
+-- synchronizing 
+vim.keymap.set("n", "<leader>sy", ":execute '!tmux setw synchronize-panes'<CR>", { desc = "Toggle synchronize panes" })
