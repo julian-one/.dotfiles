@@ -1,17 +1,11 @@
--- Trouble configuration
 return {
     "folke/trouble.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
-    opts = {
-        -- your existing configuration here
-        -- leave it empty to use the default settings
-    },
+    opts = {},
     config = function()
-        -- Keybindings for Trouble
         local trouble = require("trouble")
         local keymap = vim.keymap.set
 
-        -- Existing keybindings
         keymap("n", "<leader>xx", function() trouble.toggle() end)
         keymap("n", "<leader>xw", function() trouble.toggle("workspace_diagnostics") end)
         keymap("n", "<leader>xd", function() trouble.toggle("document_diagnostics") end)
@@ -19,7 +13,6 @@ return {
         keymap("n", "<leader>xl", function() trouble.toggle("loclist") end)
         keymap("n", "gR", function() trouble.toggle("lsp_references") end)
 
-        -- Additional keybindings
         keymap("n", "<leader>xt", function() trouble.toggle() end)                                      -- Toggle trouble
         keymap("n", "<leader>xo", function() trouble.open() end)                                        -- Open trouble
         keymap("n", "<leader>xc", function() trouble.close() end)                                       -- Close trouble
