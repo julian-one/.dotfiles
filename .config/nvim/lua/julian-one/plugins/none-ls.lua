@@ -11,7 +11,6 @@ return {
 					null_ls.builtins.completion.spell,
 					formatting.gofmt,
 					formatting.goimports,
-                    formatting.golangci_lint,
 				},
 			})
 
